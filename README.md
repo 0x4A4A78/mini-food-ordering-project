@@ -42,7 +42,7 @@ npm start
 - ภาพหน้าจอ Jenkins ที่เห็น Build, Test, Deploy ผ่าน และ Console Output
 - ไฟล์นำเสนอ `presentation.html` (เปิดในเบราว์เซอร์และกดลูกศรซ้าย/ขวา)
 
-ภาพหลักฐานอยู่ใน `evidence/`: `jenkins-stage-view.png`, `jenkins-console-success.png`, `food-ordering-deployed.png`, `order-management.png`
+ภาพหลักฐานอยู่ใน `evidence/`: `jenkins-stage-view.png`, `jenkins-console-success.png`, `jenkins-auto-trigger.png`, `food-ordering-deployed.png`, `order-management.png`
 
 ## แผน 2 สัปดาห์
 
