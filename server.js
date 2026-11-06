@@ -1,7 +1,7 @@
 const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
-const { createOrder, updateStatus, MENU } = require('./src/orders');
+const { createOrder, updateStatus, validateTable, MENU } = require('./src/orders');
 
 const root = __dirname;
 const publicDir = fs.existsSync(path.join(root, 'dist')) ? path.join(root, 'dist') : path.join(root, 'public');
@@ -10,7 +10,7 @@ const port = Number(process.env.PORT || 3000);
 const mime = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8' };
 
 function readOrders() {
-  try { return JSON.parse(fs.readFileSync(dataFile, 'utf8')); }
+  try { return JSON.parse(fs.readFileSync(dataFile, 'utf8')).filter(order => Number.isInteger(order.table)); }
   catch (error) { if (error.code === 'ENOENT') return []; throw error; }
 }
 function saveOrders(orders) {
@@ -34,10 +34,14 @@ const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, 'http://localhost');
     if (url.pathname === '/api/health') return send(res, 200, { ok: true });
     if (url.pathname === '/api/menu' && req.method === 'GET') return send(res, 200, MENU);
-    if (url.pathname === '/api/orders' && req.method === 'GET') return send(res, 200, readOrders());
+    if (url.pathname === '/api/orders' && req.method === 'GET') {
+      const orders = readOrders();
+      return send(res, 200, url.searchParams.has('table') ? orders.filter(order => order.table === validateTable(url.searchParams.get('table'))) : orders);
+    }
     if (url.pathname === '/api/orders' && req.method === 'POST') {
-      const order = createOrder(await body(req));
-      const orders = readOrders(); orders.unshift(order); saveOrders(orders);
+      const orders = readOrders();
+      const order = createOrder(await body(req), orders);
+      orders.unshift(order); saveOrders(orders);
       return send(res, 201, order);
     }
     const statusMatch = url.pathname.match(/^\/api\/orders\/([a-z0-9-]+)\/status$/i);

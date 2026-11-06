@@ -1,5 +1,41 @@
-<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ครัวบ้านเรา | สั่งอาหารออนไลน์</title><link rel="stylesheet" href="/style.css"></head><body>
-<header><div class="wrap nav"><div class="brand"><span class="brand-icon">🍽️</span><span>ครัวบ้านเรา<small>อร่อยง่าย ๆ ทุกวัน</small></span></div><nav><button class="tab active" data-page="shop">สั่งอาหาร</button><button class="tab" data-page="orders">สถานะออเดอร์</button><button class="tab" data-page="admin">หน้าร้าน</button></nav></div></header>
-<main class="wrap"><section id="shop"><div class="hero"><div><span class="eyebrow">ร้านอาหารออนไลน์ · Mini Project</span><h1>มื้ออร่อย<br><em>สั่งง่ายในไม่กี่คลิก</em></h1><p>เลือกเมนูโปรด ยืนยันออเดอร์ แล้วติดตามสถานะได้ทันที</p><a class="primary" href="#menu">เลือกเมนูอาหาร ↗</a></div><div class="hero-art">🍲<span>สดใหม่ทุกจาน</span></div></div><div class="section-title" id="menu"><div><span class="eyebrow">OUR MENU</span><h2>เมนูแนะนำ</h2></div><p>เลือกความอร่อยได้ตามใจ</p></div><div class="layout"><div id="menu-grid" class="menu-grid"></div><aside class="cart"><h2>🛒 ตะกร้าของคุณ</h2><div id="cart-items" class="cart-items"></div><div class="cart-footer"><div class="total"><span>ยอดรวม</span><strong id="total">฿0</strong></div><label for="customer">ชื่อผู้สั่ง</label><input id="customer" maxlength="60" placeholder="กรอกชื่อของคุณ"><button id="checkout" class="primary full">ยืนยันคำสั่งซื้อ →</button><small>ชำระเงินที่ร้าน (จำลอง)</small><p id="checkout-message" role="status"></p></div></aside></div></section>
-<section id="orders" hidden><div class="section-title"><div><span class="eyebrow">TRACK ORDER</span><h1>สถานะออเดอร์</h1></div><button class="secondary" id="refresh-orders">รีเฟรช</button></div><div id="my-orders" class="order-list"></div></section>
-<section id="admin" hidden><div class="section-title"><div><span class="eyebrow">KITCHEN BOARD</span><h1>จัดการออเดอร์</h1></div><button class="secondary" id="refresh-admin">รีเฟรช</button></div><p class="notice">หน้าร้านสำหรับสาธิตโครงงาน ยังไม่มีระบบเข้าสู่ระบบ</p><div id="admin-orders" class="order-list"></div></section></main><footer>ครัวบ้านเรา · Mini Project ระบบสั่งอาหาร</footer><script src="/app.js"></script></body></html>
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173b2e">
+  <title>ครัวบ้านเรา | สั่งสุกี้ที่โต๊ะ</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="wordmark" href="/" aria-label="ครัวบ้านเรา หน้าแรก"><span class="wordmark-mark" aria-hidden="true">ค.</span><span>ครัวบ้านเรา<small>บุฟเฟต์สุกี้ · ระบบสั่งที่โต๊ะ</small></span></a>
+      <nav aria-label="เมนูหลัก">
+        <button class="nav-link active" data-page="menu">เมนูอาหาร</button>
+        <button class="nav-link" data-page="history">รายการที่สั่ง</button>
+        <button class="nav-link" data-page="kitchen">หน้าครัว</button>
+      </nav>
+    </div>
+  </header>
+  <main class="shell">
+    <section id="menu" class="page">
+      <div class="intro">
+        <div class="intro-copy"><span class="table-chip" id="table-chip">ยังไม่เลือกโต๊ะ</span><h1>มื้อนี้<br><em>สั่งได้เรื่อย ๆ</em></h1><p>เลือกจานที่ชอบ ส่งเข้าครัวเป็นรอบ แล้วกลับมาสั่งเพิ่มได้ทุกเมื่อ</p><button class="text-button" id="change-table">เปลี่ยนหมายเลขโต๊ะ <span aria-hidden="true">↗</span></button></div>
+        <div class="intro-art" aria-hidden="true"><div class="art-bowl"><div class="art-broth"><span class="art-leaf leaf-one"></span><span class="art-leaf leaf-two"></span><span class="art-leaf leaf-three"></span><span class="art-meat meat-one"></span><span class="art-meat meat-two"></span></div></div><div class="art-caption">เลือก · ส่ง · อิ่ม</div></div>
+      </div>
+      <div class="menu-head"><div><h2>เลือกเมนู</h2><p>ทุกจานในหน้านี้เป็นรายการจำลองสำหรับ Mini Project</p></div><span id="menu-count" class="menu-count"></span></div>
+      <div id="categories" class="categories" role="group" aria-label="หมวดอาหาร"></div>
+      <div class="ordering-layout"><div id="menu-grid" class="menu-grid" aria-live="polite"></div>
+        <aside id="cart" class="cart" aria-label="รายการที่เลือก"><div class="cart-top"><div><span class="cart-kicker">รอบใหม่</span><h2>รายการที่เลือก</h2></div><span class="cart-badge" id="cart-count">0</span></div><div id="cart-items" class="cart-items"></div><div class="cart-bottom"><div class="cart-summary"><span>จำนวนทั้งหมด</span><strong id="item-total">0 จาน</strong></div><button id="send-order" class="button-primary" disabled>ส่งรายการเข้าครัว <span aria-hidden="true">↗</span></button><p class="cart-note">เลือกพอดีกิน แล้วสั่งเพิ่มรอบถัดไปได้</p><p id="order-message" class="message" role="status"></p></div></aside>
+      </div>
+    </section>
+    <section id="history" class="page" hidden><div class="page-heading"><div><span class="section-label">โต๊ะของคุณ</span><h1>รายการที่สั่ง</h1><p>ดูทุกครั้งที่ส่งรายการเข้าครัวและสถานะล่าสุด</p></div><button class="button-outline" id="refresh-history">อัปเดตสถานะ</button></div><div id="history-list" class="order-list"></div></section>
+    <section id="kitchen" class="page" hidden><div class="page-heading"><div><span class="section-label">สำหรับสาธิต</span><h1>หน้าครัว</h1><p>รายการจากทุกโต๊ะ เรียงจากรายการล่าสุด</p></div><button class="button-outline" id="refresh-kitchen">รีเฟรชรายการ</button></div><p class="demo-notice">หน้าครัวในโครงงานนี้ยังไม่มีระบบเข้าสู่ระบบ</p><div id="kitchen-list" class="order-list"></div></section>
+  </main>
+  <div id="mobile-cart-bar" class="mobile-cart-bar" hidden><button id="open-cart" class="button-primary">ดูรายการที่เลือก <span id="mobile-count">0 จาน</span></button></div>
+  <dialog id="table-dialog" class="table-dialog"><form method="dialog"><span class="section-label">เริ่มต้นมื้ออร่อย</span><h2>เลือกโต๊ะของคุณ</h2><p>ในร้านจริง ลูกค้าจะเข้าหน้านี้จาก QR ประจำโต๊ะ สำหรับโครงงานให้เลือกโต๊ะเพื่อทดลอง</p><label for="table-number">หมายเลขโต๊ะ</label><select id="table-number" required></select><button class="button-primary" id="confirm-table" value="confirm">เริ่มสั่งอาหาร</button><p id="table-error" class="message" role="alert"></p></form></dialog>
+  <footer><div class="shell">ครัวบ้านเรา <span>ระบบสั่งอาหารบุฟเฟต์สำหรับสาธิต Mini Project</span></div></footer>
+  <script src="/app.js"></script>
+</body>
+</html>
