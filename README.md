@@ -32,7 +32,7 @@ npm start
 4. สร้าง Jenkins **Multibranch Pipeline** เชื่อม GitHub repository; Jenkins จะอ่าน `Jenkinsfile` จากแต่ละ branch
 5. กด Scan Repository Now / Build Now เพื่อเริ่มต้น; ถ้าต้องการให้รันทุก push ให้ตั้ง GitHub webhook ไปยัง `https://<jenkins-host>/github-webhook/` (Jenkins ต้องเข้าถึงได้จาก GitHub)
 6. Pipeline ทำ Checkout → Build (`npm run build`) → Test (`npm test`) → Deploy เฉพาะ branch `main`
-7. Deploy คัดลอกไฟล์ไป `%USERPROFILE%\food-ordering-deploy`, เปิดแอปที่ http://localhost:3001 และตรวจ `/api/health`
+7. Deploy คัดลอกไฟล์ไปยังโฟลเดอร์ผู้ใช้ของ Jenkins service, เปิดแอปเป็น Windows Scheduled Task ชื่อ `MiniProjectFoodOrdering` ที่ http://localhost:3001 และตรวจ `/api/health`
 
 ถ้า Jenkins เครื่องนี้เป็น macOS/Linux ต้องเปลี่ยน `bat` และ `deploy.ps1` ให้ตรงระบบปฏิบัติการก่อนใช้งาน
 

@@ -2,12 +2,9 @@ $ErrorActionPreference = 'Stop'
 $source = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $target = Join-Path $env:USERPROFILE 'food-ordering-deploy'
 New-Item -ItemType Directory -Force -Path $target | Out-Null
-$pidFile = Join-Path $target 'server.pid'
-if (Test-Path $pidFile) {
-    $oldPid = [int](Get-Content $pidFile -Raw)
-    $oldProcess = Get-Process -Id $oldPid -ErrorAction SilentlyContinue
-    if ($oldProcess -and $oldProcess.ProcessName -eq 'node') { Stop-Process -Id $oldPid -Force; Start-Sleep -Seconds 1 }
-}
+$taskName = 'MiniProjectFoodOrdering'
+$task = Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
+if ($task) { Stop-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue; Start-Sleep -Seconds 1 }
 Copy-Item (Join-Path $source 'server.js') $target -Force
 Copy-Item (Join-Path $source 'package.json') $target -Force
 foreach ($folder in @('src', 'dist')) {
@@ -16,12 +13,20 @@ foreach ($folder in @('src', 'dist')) {
     Copy-Item (Join-Path $source $folder) $destination -Recurse -Force
 }
 $port = if ($env:DEPLOY_PORT) { [int]$env:DEPLOY_PORT } else { 3001 }
-$env:PORT = "$port"
-$env:DATA_FILE = Join-Path $target 'data\orders.json'
+$node = (Get-Command node).Source
+$runner = Join-Path $target 'run-server.ps1'
+@"
+`$env:PORT = '$port'
+`$env:DATA_FILE = '$(Join-Path $target 'data\orders.json')'
+Set-Location '$target'
+& '$node' server.js
+"@ | Set-Content $runner
 $existing = Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1
 if ($existing) { throw "Port $port is in use by PID $($existing.OwningProcess)" }
-$process = Start-Process -FilePath (Get-Command node).Source -ArgumentList 'server.js' -WorkingDirectory $target -WindowStyle Hidden -PassThru
-Set-Content -Path $pidFile -Value $process.Id
+$action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument ('-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $runner + '"')
+$principal = New-ScheduledTaskPrincipal -UserId 'SYSTEM' -LogonType ServiceAccount
+Register-ScheduledTask -TaskName $taskName -Action $action -Principal $principal -Force | Out-Null
+Start-ScheduledTask -TaskName $taskName
 Start-Sleep -Seconds 2
 $health = Invoke-RestMethod -Uri "http://localhost:$port/api/health" -TimeoutSec 5
 if (-not $health.ok) { throw 'Deployment health check failed' }
