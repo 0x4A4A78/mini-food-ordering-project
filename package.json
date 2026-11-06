@@ -1,0 +1,11 @@
+{
+  "name": "mini-food-ordering",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "build": "node scripts/build.js",
+    "test": "node --test"
+  },
+  "engines": { "node": ">=20" }
+}
