@@ -29,8 +29,8 @@ npm start
 1. สร้าง GitHub repository แล้วเพิ่มเพื่อนร่วมทีมเป็น collaborator
 2. ตั้ง branch หลักชื่อ `main`; สมาชิกสร้าง branch งานของตน, commit, push และเปิด Pull Request เพื่อรวมโค้ด
 3. ติดตั้ง Jenkins บนเครื่อง Windows ที่มี Node.js 20+ และ Git; ให้ Jenkins service account มีสิทธิ์เขียนในโฟลเดอร์ผู้ใช้
-4. สร้าง Jenkins **Multibranch Pipeline** เชื่อม GitHub repository; Jenkins จะอ่าน `Jenkinsfile` จากแต่ละ branch
-5. กด Scan Repository Now / Build Now เพื่อเริ่มต้น; ถ้าต้องการให้รันทุก push ให้ตั้ง GitHub webhook ไปยัง `https://<jenkins-host>/github-webhook/` (Jenkins ต้องเข้าถึงได้จาก GitHub)
+4. สร้าง Jenkins **Pipeline** แบบ Pipeline script from SCM ชี้ไปที่ branch `main` และ `Jenkinsfile`; repository นี้เป็น private จึงใช้ read-only deploy key ของ GitHub เป็น Jenkins SSH credential
+5. กด Build Now ครั้งแรก จากนั้น `pollSCM` ใน `Jenkinsfile` จะตรวจ GitHub ทุกประมาณ 2 นาทีและรันเมื่อมี commit ใหม่ (เหมาะกับ Jenkins บนเครื่อง localhost)
 6. Pipeline ทำ Checkout → Build (`npm run build`) → Test (`npm test`) → Deploy เฉพาะ branch `main`
 7. Deploy คัดลอกไฟล์ไปยังโฟลเดอร์ผู้ใช้ของ Jenkins service, เปิดแอปเป็น Windows Scheduled Task ชื่อ `MiniProjectFoodOrdering` ที่ http://localhost:3001 และตรวจ `/api/health`
 
@@ -41,6 +41,8 @@ npm start
 - ลิงก์ GitHub repository ที่มีประวัติ commit/PR ของสมาชิก
 - ภาพหน้าจอ Jenkins ที่เห็น Build, Test, Deploy ผ่าน และ Console Output
 - ไฟล์นำเสนอ `presentation.html` (เปิดในเบราว์เซอร์และกดลูกศรซ้าย/ขวา)
+
+ภาพหลักฐานอยู่ใน `evidence/`: `jenkins-stage-view.png`, `jenkins-console-success.png`, `food-ordering-deployed.png`, `order-management.png`
 
 ## แผน 2 สัปดาห์
 
