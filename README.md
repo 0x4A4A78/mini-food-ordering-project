@@ -25,6 +25,13 @@ npm start
 
 > เป็นระบบจำลองเพื่อการเรียน ลิงก์โต๊ะเป็นตัวอย่างการสแกน QR ยังไม่มีการสร้าง QR จริง หน้าครัวยังไม่มีการยืนยันตัวตนและการชำระเงินจริง
 
+## Deploy บน Vercel
+
+เชื่อม repository กับโปรเจกต์ Vercel และเลือกโฟลเดอร์รากของ repository เป็น Root Directory
+ไฟล์ `vercel.json` กำหนดให้เสิร์ฟหน้าเว็บจาก `dist/` และส่งคำขอ `/api/` ไปยัง Vercel Function
+เชื่อม Private Vercel Blob กับโปรเจกต์เพื่อให้ Vercel ตั้งค่า `BLOB_READ_WRITE_TOKEN`
+ออเดอร์ production และ preview เก็บแยกไฟล์กัน ส่วนการรันบนเครื่องยังใช้ `data/orders.json`
+
 ## GitHub และ Jenkins (Windows)
 
 1. สร้าง GitHub repository แล้วเพิ่มเพื่อนร่วมทีมเป็น collaborator
